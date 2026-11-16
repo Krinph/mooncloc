@@ -1,0 +1,12 @@
+import {
+  "Krinph/mooncloc",
+  "moonbitlang/core/argparse",
+  "moonbitlang/core/async",
+  "moonbitlang/core/env",
+}
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/async" ],
+)
+
+pkgtype(kind: "executable")
