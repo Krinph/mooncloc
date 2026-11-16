@@ -38,23 +38,24 @@ mooncloc 是一个用 MoonBit 实现的 cloc 风格代码统计工具，同时�
 
 ## 五、工程与验证
 
-- **测试**：40 个单元/端到端测试（tokenizer、复杂度、忽略规则、报告、真实目录扫描），
-  `moon test` 全部通过。
+- **测试**：41 个单元/端到端测试（tokenizer、复杂度、忽略规则、报告、真实目录扫描、
+  损坏编码文件容错），`moon test` 全部通过。
 - **质量门禁**：`moon check --deny-warn` 零警告通过；`moon fmt` 统一格式。
-- **CI**：GitHub Actions 三平台（Linux/macOS/Windows）check/test/fmt/info + 自测。
+- **CI**：GitHub Actions 三平台（Linux/macOS/Windows）check/test/fmt/info + 自测，
+  线上运行全部通过。
 - **可运行示例**：`samples/` 提供 MoonBit/Python/Rust 样例，`moon run cmd/main -- .` 直接运行。
-- **开发记录**：GitHub 公开仓库 16+ 个语义化提交，覆盖初始化、语言表、tokenizer、复杂度、
-  忽略规则、扫描器、报告、CLI、测试、文档与功能增强。
+- **开发记录**：GitHub 公开仓库 18+ 个语义化提交，覆盖初始化、语言表、tokenizer、复杂度、
+  忽略规则、扫描器、报告、CLI、测试、文档、功能增强与健壮性修复。
 
 ## 六、项目规模（自测）
 
 | 指标 | 数值 |
 |---|---|
-| MoonBit 代码行 | 2258 |
-| 注释行 | 299 |
+| MoonBit 代码行 | 2261 |
+| 注释行 | 300 |
 | 文件数 | 14 |
 | 圈复杂度总量 | 214 |
-| 单元测试 | 40 个全部通过 |
+| 单元测试 | 41 个全部通过 |
 
 ## 七、开源与合规
 
@@ -64,12 +65,12 @@ mooncloc 是一个用 MoonBit 实现的 cloc 风格代码统计工具，同时�
 
 ## 八、仓库与发布
 
-- GitHub 仓库：<https://github.com/Krinph/mooncloc>（公开仓库，默认分支 main，16+ 个有效提交）
+- GitHub 仓库：<https://github.com/Krinph/mooncloc>（公开仓库，默认分支 main，18+ 个有效提交）
 - mooncakes.io 包名：`Krinph/mooncloc`（待 `moon publish` 发布）
 
 ## 九、后续计划
 
-1. 发布到 mooncakes.io，补充 `moon.mod` 的 repository 链接。
+1. 发布到 mooncakes.io（`moon.mod` 的 repository 链接已配置）。
 2. 增加复杂度阈值检查（CI 门禁 `--max-complexity`）。
 3. 支持 `.clocignore` 配置文件与增量统计。
 4. 补充性能基准（大仓库扫描耗时）。
