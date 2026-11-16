@@ -14,10 +14,11 @@ count in your own MoonBit programs) and a **CLI** (`moon run cmd/main`).
   (including multi-line strings, raw strings and nested block comments).
 - 🌀 **Cyclomatic complexity** — counts `if`/`elif`/`match`/`for`/`while`/
   `loop`/`guard`/`catch`/`case`/`when`/`switch` plus `&&`, `||` and `?`.
-- 🌐 **30+ languages** — MoonBit, C, C++, C#, Java, JavaScript, JSX,
+- 🌐 **45 languages** — MoonBit, C, C++, C#, Java, JavaScript, JSX,
   TypeScript, TSX, Python, Ruby, Go, Rust, Swift, Kotlin, PHP, Lua, Shell,
   SQL, HTML, CSS, JSON, XML, YAML, TOML, INI, Markdown, Dockerfile, Zig,
-  Dart, Haskell, OCaml, Elixir.
+  Dart, Haskell, OCaml, Elixir, Perl, R, Julia, Nim, PowerShell, Scala,
+  Groovy, Objective-C, Erlang, Clojure, Verilog, Lisp.
 - 📁 **gitignore-style excludes** — `*`, `?`, `**`, directory patterns and
   anchored patterns; sensible defaults (`.git`, `target`, `_build`,
   `node_modules`, ...).
@@ -72,10 +73,13 @@ Count the current project:
 $ moon run cmd/main -- .
 Language  Files  Blank  Comment  Code  Complexity
 --------  -----  -----  -------  ----  ----------
-MoonBit      16    149      300  1948         237
-Markdown     2      2        0    31           0
+MoonBit      14    167      299  2258         214
+Markdown      2     46        0   140          15
+YAML          1      6        0    45           4
+Rust          1      0        2    13           2
+Python        1      5        1     7           0
 --------  -----  -----  -------  ----  ----------
-Total       18    151      300  1979         237
+Total        19    224      302  2463         235
 ```
 
 JSON output with per-file detail:
@@ -141,8 +145,19 @@ moon info
 ```
 
 The test suite covers the tokenizer, complexity analyzer, ignore rules,
-report rendering and end-to-end directory scans (36+ tests). The project
+report rendering and end-to-end directory scans (40+ tests). The project
 dogfoods itself: `moon run cmd/main -- .` reports the statistics above.
+
+### Health metrics
+
+With `--all` the table output adds a per-file breakdown plus a health line:
+
+```text
+comment ratio: 13%   complexity per 100 code lines: 12   most complex file: samples/fib.rs
+```
+
+JSON output includes the same data in a `health` section, and
+`most_complex_files` / `comment_ratio` / `complexity_per_code` are public API.
 
 ## License
 
