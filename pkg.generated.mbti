@@ -1,0 +1,111 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Krinph/mooncloc"
+
+// Values
+pub fn aggregate_by_language(Array[FileCount]) -> Array[(String, ProjectCount)]
+
+pub fn all_languages() -> Array[LanguageDef]
+
+pub fn count_complexity(String, LanguageDef) -> Int32
+
+pub fn count_file_text(String, LanguageDef, CountOptions) -> FileCount
+
+pub fn count_text(String, LanguageDef, Bool) -> CountResult
+
+pub let default_excludes : Array[String]
+
+pub fn format_by_name(String) -> ReportFormat
+
+pub fn language_by_extension(String) -> LanguageDef?
+
+pub fn language_by_filename(String) -> LanguageDef?
+
+pub let max_file_bytes : Int64
+
+pub fn render_report(Array[FileCount], ReportFormat, Bool) -> String
+
+pub fn report_totals(Array[FileCount]) -> ProjectCount
+
+pub async fn scan_directory(String, CountOptions) -> (Array[FileCount], Array[String])
+
+// Errors
+
+// Types and methods
+pub struct CountOptions {
+  include_hidden : Bool
+  exclude : Array[String]
+  languages : Array[String]
+  count_mixed_as_code : Bool
+  count_complexity : Bool
+}
+pub fn CountOptions::default() -> Self
+pub fn CountOptions::with_complexity(Self, Bool) -> Self
+pub fn CountOptions::with_exclude(Self, Array[String]) -> Self
+pub fn CountOptions::with_hidden(Self, Bool) -> Self
+pub fn CountOptions::with_languages(Self, Array[String]) -> Self
+
+pub struct CountResult {
+  mut code : Int32
+  mut comment : Int32
+  mut blank : Int32
+  mut mixed : Int32
+}
+pub fn CountResult::default() -> Self
+
+pub struct FileCount {
+  path : String
+  language : String
+  blank : Int32
+  comment : Int32
+  code : Int32
+  mixed : Int32
+  complexity : Int32
+}
+
+pub struct IgnoreRules {
+  patterns : Array[String]
+}
+pub fn IgnoreRules::ignores(Self, String) -> Bool
+pub fn IgnoreRules::new(Array[String]) -> Self
+
+pub struct LanguageDef {
+  name : String
+  extensions : Array[String]
+  filenames : Array[String]
+  line_comment : Array[String]
+  block_comment : Array[(String, String)]
+  nested_block : Bool
+  string_quotes : Array[Char]
+  multiline_quotes : Array[Char]
+  multiline_strings : Array[(String, String)]
+  raw_strings : Array[(String, String)]
+  shebang_is_comment : Bool
+}
+
+pub enum LineKind {
+  Blank
+  Code
+  Comment
+  Mixed
+}
+
+pub struct ProjectCount {
+  mut files : Int32
+  mut blank : Int32
+  mut comment : Int32
+  mut code : Int32
+  mut mixed : Int32
+  mut complexity : Int32
+}
+pub fn ProjectCount::default() -> Self
+
+pub enum ReportFormat {
+  Table
+  Json
+  Csv
+  Markdown
+}
+
+// Type aliases
+
+// Traits
