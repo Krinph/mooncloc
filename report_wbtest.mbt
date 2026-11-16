@@ -121,3 +121,45 @@ test "report: format_by_name parsing" {
   assert_true(format_by_name("table") is ReportFormat::Table)
   assert_true(format_by_name("bogus") is ReportFormat::Table)
 }
+
+///|
+test "report: most complex files are sorted descending" {
+  let counts = sample_counts()
+  let top = most_complex_files(counts, 2)
+  assert_eq(top.length(), 2)
+  assert_eq(top[0].path, "a.mbt")
+  assert_eq(top[0].complexity, 4)
+  assert_eq(top[1].complexity, 4)
+  let all = most_complex_files(counts, 10)
+  assert_eq(all.length(), 3)
+}
+
+///|
+test "report: comment ratio and complexity density" {
+  let counts = sample_counts()
+  // comment 6, code 11 -> ratio 6/17
+  let ratio = comment_ratio(counts)
+  assert_eq(ratio, 6.0 / 17.0)
+  // complexity 10 / code 11
+  let density = complexity_per_code(counts)
+  assert_eq(density, 10.0 / 11.0)
+  assert_eq(comment_ratio([]), 0.0)
+  assert_eq(complexity_per_code([]), 0.0)
+}
+
+///|
+test "report: per-file table includes file rows and health line" {
+  let text = render_report(sample_counts(), ReportFormat::Table, true)
+  assert_true(text.contains("a.mbt"))
+  assert_true(text.contains("c.py"))
+  assert_true(text.contains("comment ratio"))
+  assert_true(text.contains("most complex file"))
+}
+
+///|
+test "report: json health section" {
+  let text = render_report(sample_counts(), ReportFormat::Json, false)
+  assert_true(text.contains("\"health\""))
+  assert_true(text.contains("\"comment_ratio\""))
+  assert_true(text.contains("\"most_complex_file\""))
+}
