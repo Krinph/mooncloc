@@ -75,13 +75,13 @@ Count the current project:
 $ moon run cmd/main -- .
 Language  Files  Blank  Comment  Code  Complexity
 --------  -----  -----  -------  ----  ----------
-MoonBit      14    167      300  2261         214
-Markdown      3     70        0   210          15
+MoonBit      14    168      302  2273         214
+Markdown      4     85        0   265          27
 YAML          1      6        0    45           4
 Rust          1      0        2    13           2
 Python        1      5        1     7           0
 --------  -----  -----  -------  ----  ----------
-Total        20    248      303  2536         235
+Total        21    264      305  2603         247
 ```
 
 JSON output with per-file detail:
