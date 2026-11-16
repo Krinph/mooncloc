@@ -91,3 +91,18 @@ async test "hidden files are skipped by default" {
   assert_eq(counts.length(), 1)
   assert_eq(counts[0].language, "MoonBit")
 }
+
+///|
+async test "unreadable text file is reported, not fatal" {
+  let dir = "test_scan_tmp5"
+  cleanup_dir(dir)
+  @fs.mkdir(dir, recursive=true)
+  @fs.write_text(dir + "/ok.mbt", "fn main {\n}\n")
+  // invalid UTF-8 bytes: the scan must skip the file, not abort.
+  @fs.write_binary(dir + "/bad.md", b"\xFF\xFE\x00\x01")
+  let (counts, errors) = scan_directory(dir, CountOptions::default())
+  cleanup_dir(dir)
+  assert_eq(counts.length(), 1)
+  assert_eq(counts[0].language, "MoonBit")
+  assert_eq(errors.length(), 1)
+}

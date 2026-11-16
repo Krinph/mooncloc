@@ -9,22 +9,24 @@ count in your own MoonBit programs) and a **CLI** (`moon run cmd/main`).
 
 ## Features
 
-- ğŸ“Š **Accurate line counting** â€?code / comment / blank / mixed lines, with a
+- **Accurate line counting** â€” code / comment / blank / mixed lines, with a
   tokenizer that understands comments and string literals per language
   (including multi-line strings, raw strings and nested block comments).
-- ğŸŒ€ **Cyclomatic complexity** â€?counts `if`/`elif`/`match`/`for`/`while`/
+- **Cyclomatic complexity** â€” counts `if`/`elif`/`match`/`for`/`while`/
   `loop`/`guard`/`catch`/`case`/`when`/`switch` plus `&&`, `||` and `?`.
-- ğŸŒ **45 languages** â€?MoonBit, C, C++, C#, Java, JavaScript, JSX,
+- **45 languages** â€” MoonBit, C, C++, C#, Java, JavaScript, JSX,
   TypeScript, TSX, Python, Ruby, Go, Rust, Swift, Kotlin, PHP, Lua, Shell,
   SQL, HTML, CSS, JSON, XML, YAML, TOML, INI, Markdown, Dockerfile, Zig,
   Dart, Haskell, OCaml, Elixir, Perl, R, Julia, Nim, PowerShell, Scala,
   Groovy, Objective-C, Erlang, Clojure, Verilog, Lisp.
-- ğŸ“ **gitignore-style excludes** â€?`*`, `?`, `**`, directory patterns and
+- **gitignore-style excludes** â€” `*`, `?`, `**`, directory patterns and
   anchored patterns; sensible defaults (`.git`, `target`, `_build`,
   `node_modules`, ...).
-- ğŸ“‹ **Four output formats** â€?aligned text table, JSON, CSV and Markdown.
-- ğŸ” **Language filtering** â€?count only the languages you care about.
-- ğŸ“š **Library + CLI** â€?a clean public API for embedding, and a full
+- **Four output formats** â€” aligned text table, JSON, CSV and Markdown.
+- **Language filtering** â€” count only the languages you care about.
+- **Health metrics** â€” comment ratio, complexity per 100 code lines and the
+  most complex file.
+- **Library + CLI** â€” a clean public API for embedding, and a full
   command-line tool on top of it.
 
 ## Install
@@ -59,7 +61,7 @@ Options:
   -x, --exclude <glob>    exclude pattern, gitignore style (repeatable)
   -l, --language <name>   only count this language (repeatable)
   -H, --hidden            include hidden files
-      --all               per-file breakdown in JSON/CSV output
+      --all               per-file breakdown in table/JSON/CSV output
       --no-complexity     disable cyclomatic complexity analysis
   -V, --version           print version
   -h, --help              print help
@@ -104,19 +106,21 @@ $ moon run cmd/main -- --language Rust --exclude "**/generated" .
 
 `mooncloc` follows the same conventions as the classic `cloc` tool:
 
-- **Code** â€?lines with actual source code.
-- **Comment** â€?lines that contain only comments (including block-comment
+- **Code** â€” lines with actual source code.
+- **Comment** â€” lines that contain only comments (including block-comment
   continuations and `#!/` shebang lines).
-- **Blank** â€?lines with only whitespace.
-- **Mixed** â€?a line with both code and a trailing comment; counted as code
-  by default (`--no-mixed-as-code` may change this in future releases).
-- **Complexity** â€?total number of branch points in the file (control-flow
+- **Blank** â€” lines with only whitespace.
+- **Mixed** â€” a line with both code and a trailing comment; counted as code
+  by default.
+- **Complexity** â€” total number of branch points in the file (control-flow
   keywords plus boolean operators). Comment and string contents are never
   counted.
 - Multi-line string literals (`"""..."""`, `#|...|#`, backticks, ...) count
   as code lines, since they are part of the source.
 - Files larger than 10 MiB are skipped, and hidden files are ignored unless
   `--hidden` is passed.
+- A file that cannot be read is reported as a warning and skipped; it never
+  aborts the whole scan.
 
 ## Library API
 

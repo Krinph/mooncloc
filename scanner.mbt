@@ -218,10 +218,14 @@ pub async fn scan_directory(
 }
 
 ///|
-/// Read a text file, returning None on failure instead of aborting.
+/// Read a text file, returning None on failure (unreadable or non-UTF-8
+/// content) instead of aborting the whole scan.
 async fn read_file_safe(path : String) -> String? {
-  match @fs.read_text(path) {
-    text => Some(text)
+  try {
+    let text = @fs.read_text(path)
+    Some(text)
+  } catch {
+    _ => None
   }
 }
 
