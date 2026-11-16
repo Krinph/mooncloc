@@ -6,6 +6,10 @@ pub fn aggregate_by_language(Array[FileCount]) -> Array[(String, ProjectCount)]
 
 pub fn all_languages() -> Array[LanguageDef]
 
+pub fn comment_ratio(Array[FileCount]) -> Double
+
+pub fn complexity_per_code(Array[FileCount]) -> Double
+
 pub fn count_complexity(String, LanguageDef) -> Int32
 
 pub fn count_file_text(String, LanguageDef, CountOptions) -> FileCount
@@ -21,6 +25,8 @@ pub fn language_by_extension(String) -> LanguageDef?
 pub fn language_by_filename(String) -> LanguageDef?
 
 pub let max_file_bytes : Int64
+
+pub fn most_complex_files(Array[FileCount], Int32) -> Array[FileCount]
 
 pub fn render_report(Array[FileCount], ReportFormat, Bool) -> String
 

@@ -24,7 +24,7 @@ pub fn format_by_name(name : String) -> ReportFormat {
 
 ///|
 /// Render a report for the given counts.
-/// `per_file` includes a per-file breakdown (JSON/CSV only).
+/// `per_file` includes a per-file breakdown (all formats).
 pub fn render_report(
   counts : Array[FileCount],
   format : ReportFormat,
@@ -33,11 +33,123 @@ pub fn render_report(
   let totals = report_totals(counts)
   let groups = aggregate_by_language(counts)
   match format {
-    ReportFormat::Table => render_table(groups, totals)
+    ReportFormat::Table =>
+      if per_file {
+        render_table_with_detail(counts, groups, totals)
+      } else {
+        render_table(groups, totals)
+      }
     ReportFormat::Json => render_json(counts, groups, totals, per_file)
     ReportFormat::Csv => render_csv(counts, groups, totals, per_file)
     ReportFormat::Markdown => render_markdown(groups, totals)
   }
+}
+
+///|
+/// The `n` most complex files, sorted by cyclomatic complexity descending
+/// (ties broken by code lines descending).
+pub fn most_complex_files(
+  counts : Array[FileCount],
+  limit : Int32,
+) -> Array[FileCount] {
+  let sorted = sort_files_by_complexity(counts)
+  if limit >= sorted.length() {
+    sorted
+  } else {
+    sorted[0:limit].to_owned()
+  }
+}
+
+///|
+fn sort_files_by_complexity(files : Array[FileCount]) -> Array[FileCount] {
+  let sorted : Array[FileCount] = []
+  for f in files {
+    sorted.push(f)
+  }
+  for i = 0; i < sorted.length(); i = i + 1 {
+    for j = i + 1; j < sorted.length(); j = j + 1 {
+      let needs_swap = sorted[j].complexity > sorted[i].complexity ||
+        (
+          sorted[j].complexity == sorted[i].complexity &&
+          sorted[j].code > sorted[i].code
+        )
+      if needs_swap {
+        let tmp = sorted[i]
+        sorted[i] = sorted[j]
+        sorted[j] = tmp
+      }
+    }
+  }
+  sorted
+}
+
+///|
+/// Comment ratio: comment lines over (code + comment) lines, as a fraction in
+/// [0, 1]. Returns 0.0 for empty input.
+pub fn comment_ratio(counts : Array[FileCount]) -> Double {
+  let totals = report_totals(counts)
+  let total = totals.code + totals.comment
+  if total == 0 {
+    0.0
+  } else {
+    totals.comment.to_double() / total.to_double()
+  }
+}
+
+///|
+/// Average cyclomatic complexity per code line.
+pub fn complexity_per_code(counts : Array[FileCount]) -> Double {
+  let totals = report_totals(counts)
+  if totals.code == 0 {
+    0.0
+  } else {
+    totals.complexity.to_double() / totals.code.to_double()
+  }
+}
+
+///|
+/// Render a table with a per-file breakdown followed by the language summary
+/// and a health line.
+fn render_table_with_detail(
+  counts : Array[FileCount],
+  groups : Array[(String, ProjectCount)],
+  totals : ProjectCount,
+) -> String {
+  let header = ["File", "Language", "Blank", "Comment", "Code", "Complexity"]
+  let rows : Array[Array[String]] = []
+  for f in counts {
+    rows.push([
+      f.path,
+      f.language,
+      f.blank.to_string(),
+      f.comment.to_string(),
+      f.code.to_string(),
+      f.complexity.to_string(),
+    ])
+  }
+  let sb = StringBuilder()
+  sb.write_string(render_ascii_table(header, rows, []))
+  sb.write_string("\n")
+  sb.write_string(render_table(groups, totals))
+  sb.write_string("\n")
+  sb.write_string(health_line(counts))
+  sb.write_string("\n")
+  sb.to_string()
+}
+
+///|
+/// A one-line health summary appended to table output.
+fn health_line(counts : Array[FileCount]) -> String {
+  let ratio = (comment_ratio(counts) * 100.0).round()
+  let density = (complexity_per_code(counts) * 100.0).round()
+  let top = most_complex_files(counts, 1)
+  let top_name = if top.length() > 0 { top[0].path } else { "-" }
+  "comment ratio: " +
+  ratio.to_string() +
+  "%   complexity per 100 code lines: " +
+  density.to_string() +
+  "   most complex file: " +
+  top_name
 }
 
 ///|
@@ -143,10 +255,22 @@ fn render_json(
   let root : Map[String, @json.Json] = Map([])
   root["totals"] = project_count_json(totals)
   root["by_language"] = @json.Json::array(language_groups_json(groups))
+  root["health"] = health_json(counts)
   if per_file {
     root["files"] = @json.Json::array(file_counts_json(counts))
   }
   @json.Json::object(root).stringify(indent=2)
+}
+
+///|
+fn health_json(counts : Array[FileCount]) -> @json.Json {
+  let m : Map[String, @json.Json] = Map([])
+  m["comment_ratio"] = @json.Json::number(comment_ratio(counts))
+  m["complexity_per_code"] = @json.Json::number(complexity_per_code(counts))
+  let top = most_complex_files(counts, 1)
+  let top_name = if top.length() > 0 { top[0].path } else { "" }
+  m["most_complex_file"] = @json.Json::string(top_name)
+  @json.Json::object(m)
 }
 
 ///|
