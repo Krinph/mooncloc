@@ -1,7 +1,7 @@
 # mooncloc
 
 Count lines of code, comments and blank lines across a directory tree, with
-**cyclomatic complexity** analysis, for **MoonBit and 30+ other languages**.
+**cyclomatic complexity** analysis, for **MoonBit and 45+ other languages**.
 
 `mooncloc` is a pure [MoonBit](https://www.moonbitlang.com) implementation of a
 cloc-style code statistics tool. It ships as both a **library** (parse and
@@ -9,22 +9,22 @@ count in your own MoonBit programs) and a **CLI** (`moon run cmd/main`).
 
 ## Features
 
-- 📊 **Accurate line counting** — code / comment / blank / mixed lines, with a
+- 📊 **Accurate line counting** �?code / comment / blank / mixed lines, with a
   tokenizer that understands comments and string literals per language
   (including multi-line strings, raw strings and nested block comments).
-- 🌀 **Cyclomatic complexity** — counts `if`/`elif`/`match`/`for`/`while`/
+- 🌀 **Cyclomatic complexity** �?counts `if`/`elif`/`match`/`for`/`while`/
   `loop`/`guard`/`catch`/`case`/`when`/`switch` plus `&&`, `||` and `?`.
-- 🌐 **45 languages** — MoonBit, C, C++, C#, Java, JavaScript, JSX,
+- 🌐 **45 languages** �?MoonBit, C, C++, C#, Java, JavaScript, JSX,
   TypeScript, TSX, Python, Ruby, Go, Rust, Swift, Kotlin, PHP, Lua, Shell,
   SQL, HTML, CSS, JSON, XML, YAML, TOML, INI, Markdown, Dockerfile, Zig,
   Dart, Haskell, OCaml, Elixir, Perl, R, Julia, Nim, PowerShell, Scala,
   Groovy, Objective-C, Erlang, Clojure, Verilog, Lisp.
-- 📁 **gitignore-style excludes** — `*`, `?`, `**`, directory patterns and
+- 📁 **gitignore-style excludes** �?`*`, `?`, `**`, directory patterns and
   anchored patterns; sensible defaults (`.git`, `target`, `_build`,
   `node_modules`, ...).
-- 📋 **Four output formats** — aligned text table, JSON, CSV and Markdown.
-- 🔍 **Language filtering** — count only the languages you care about.
-- 📚 **Library + CLI** — a clean public API for embedding, and a full
+- 📋 **Four output formats** �?aligned text table, JSON, CSV and Markdown.
+- 🔍 **Language filtering** �?count only the languages you care about.
+- 📚 **Library + CLI** �?a clean public API for embedding, and a full
   command-line tool on top of it.
 
 ## Install
@@ -104,13 +104,13 @@ $ moon run cmd/main -- --language Rust --exclude "**/generated" .
 
 `mooncloc` follows the same conventions as the classic `cloc` tool:
 
-- **Code** — lines with actual source code.
-- **Comment** — lines that contain only comments (including block-comment
+- **Code** �?lines with actual source code.
+- **Comment** �?lines that contain only comments (including block-comment
   continuations and `#!/` shebang lines).
-- **Blank** — lines with only whitespace.
-- **Mixed** — a line with both code and a trailing comment; counted as code
+- **Blank** �?lines with only whitespace.
+- **Mixed** �?a line with both code and a trailing comment; counted as code
   by default (`--no-mixed-as-code` may change this in future releases).
-- **Complexity** — total number of branch points in the file (control-flow
+- **Complexity** �?total number of branch points in the file (control-flow
   keywords plus boolean operators). Comment and string contents are never
   counted.
 - Multi-line string literals (`"""..."""`, `#|...|#`, backticks, ...) count
