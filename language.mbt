@@ -124,6 +124,18 @@ pub fn all_languages() -> Array[LanguageDef] {
     lang_haskell(),
     lang_ocaml(),
     lang_elixir(),
+    lang_perl(),
+    lang_r(),
+    lang_julia(),
+    lang_nim(),
+    lang_powershell(),
+    lang_scala(),
+    lang_groovy(),
+    lang_objective_c(),
+    lang_erlang(),
+    lang_clojure(),
+    lang_verilog(),
+    lang_lisp(),
   ]
 }
 
@@ -476,4 +488,118 @@ fn lang_elixir() -> LanguageDef {
     string_quotes=['"', '\''],
     shebang_is_comment=true,
   )
+}
+
+///|
+fn lang_perl() -> LanguageDef {
+  make_lang(
+    "Perl",
+    [".pl", ".pm"],
+    line_comment=["#"],
+    block_comment=[("=begin", "=end")],
+    string_quotes=['"', '\''],
+    shebang_is_comment=true,
+  )
+}
+
+///|
+fn lang_r() -> LanguageDef {
+  make_lang("R", [".r", ".R"], line_comment=["#"], string_quotes=['"', '\''])
+}
+
+///|
+fn lang_julia() -> LanguageDef {
+  make_lang(
+    "Julia",
+    [".jl"],
+    line_comment=["#"],
+    string_quotes=['"', '\''],
+    multiline_strings=[("\"\"\"", "\"\"\"")],
+    shebang_is_comment=true,
+  )
+}
+
+///|
+fn lang_nim() -> LanguageDef {
+  make_lang("Nim", [".nim"], line_comment=["#"], string_quotes=['"', '\''], multiline_strings=[
+    ("\"\"\"", "\"\"\""),
+  ])
+}
+
+///|
+fn lang_powershell() -> LanguageDef {
+  make_lang(
+    "PowerShell",
+    [".ps1", ".psm1"],
+    line_comment=["#"],
+    block_comment=[("<#", "#>")],
+    string_quotes=['"', '\''],
+  )
+}
+
+///|
+fn lang_scala() -> LanguageDef {
+  make_lang(
+    "Scala",
+    [".scala", ".sc"],
+    line_comment=["//"],
+    block_comment=[("/*", "*/")],
+    string_quotes=['"', '\''],
+    multiline_strings=[("\"\"\"", "\"\"\"")],
+  )
+}
+
+///|
+fn lang_groovy() -> LanguageDef {
+  make_lang(
+    "Groovy",
+    [".groovy", ".gvy"],
+    line_comment=["//"],
+    block_comment=[("/*", "*/")],
+    string_quotes=['"', '\''],
+    multiline_strings=[("\"\"\"", "\"\"\"")],
+  )
+}
+
+///|
+fn lang_objective_c() -> LanguageDef {
+  make_lang(
+    "Objective-C",
+    [".m", ".mm"],
+    line_comment=["//"],
+    block_comment=[("/*", "*/")],
+    string_quotes=['"', '\''],
+  )
+}
+
+///|
+fn lang_erlang() -> LanguageDef {
+  make_lang("Erlang", [".erl", ".hrl"], line_comment=["%"], string_quotes=[
+    '"', '\'',
+  ])
+}
+
+///|
+fn lang_clojure() -> LanguageDef {
+  make_lang("Clojure", [".clj", ".cljs", ".cljc"], line_comment=[";"], string_quotes=[
+    '"',
+  ])
+}
+
+///|
+fn lang_verilog() -> LanguageDef {
+  make_lang(
+    "Verilog",
+    [".v", ".sv"],
+    line_comment=["//"],
+    block_comment=[("/*", "*/")],
+    string_quotes=['"'],
+  )
+}
+
+///|
+fn lang_lisp() -> LanguageDef {
+  make_lang("Lisp", [".lisp", ".lsp", ".el"], line_comment=[";"], string_quotes=[
+    '"',
+  ])
 }
