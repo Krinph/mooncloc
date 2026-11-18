@@ -49,3 +49,11 @@ jobs:
       - name: dogfood
         run: |
           moon run cmd/main -- .
+
+      - name: quality-gate smoke test
+        shell: bash
+        run: |
+          moon run cmd/main -- --snapshot mooncloc-baseline.json samples
+          moon run cmd/main -- --baseline mooncloc-baseline.json --check \
+            --max-code-growth 1000 samples
+          rm -f mooncloc-baseline.json
