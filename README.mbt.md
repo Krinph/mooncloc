@@ -1,10 +1,12 @@
 # Krinph/mooncloc
 
-Count lines of code, comments and blank lines with cyclomatic complexity
-analysis, for MoonBit and 30+ other languages.
+Code quality regression gate for MoonBit: baseline snapshots, diff and CI
+gating on top of line/complexity statistics (45+ languages).
 
 - Accurate tokenizer per language (comments, multi-line strings, raw strings)
 - Cyclomatic complexity analysis
+- Baseline snapshots + regression diff + CI quality gate
+- Import TokeiMBT/tokei JSON reports as baselines
 - gitignore-style excludes and language filters
 - table / JSON / CSV / Markdown output
 - Library API + CLI

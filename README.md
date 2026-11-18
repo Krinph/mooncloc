@@ -1,11 +1,29 @@
 # mooncloc
 
 Count lines of code, comments and blank lines across a directory tree, with
-**cyclomatic complexity** analysis, for **MoonBit and 45+ other languages**.
+**cyclomatic complexity** analysis, for **MoonBit and 45+ other languages** —
+and turn those numbers into a **CI quality gate** by diffing against a saved
+baseline.
 
 `mooncloc` is a pure [MoonBit](https://www.moonbitlang.com) implementation of a
-cloc-style code statistics tool. It ships as both a **library** (parse and
-count in your own MoonBit programs) and a **CLI** (`moon run cmd/main`).
+code quality tool. It ships as both a **library** (parse and count in your own
+MoonBit programs) and a **CLI** (`moon run cmd/main`).
+
+## What makes it different from a line counter
+
+Plain counters (tokei, `TokeiMBT`, cloc) answer *"how much code is there?"*.
+mooncloc also answers *"did this change make the code worse, and should CI
+block it?"*:
+
+- **`--snapshot`** saves a self-describing baseline (per-file metrics).
+- **`--baseline ... --check`** diffs the current tree against it and fails with
+  exit code 1 when code/complexity growth or comment-ratio thresholds are
+  exceeded — ready for CI.
+- **`--baseline tokei-report.json`** reuses a TokeiMBT / tokei JSON report as
+  the baseline, so an existing counting step does not need to change.
+
+See [`docs/COMPARISON.md`](docs/COMPARISON.md) for a same-project output
+comparison and the reuse/extension/differentiation rationale.
 
 ## Features
 
@@ -26,6 +44,10 @@ count in your own MoonBit programs) and a **CLI** (`moon run cmd/main`).
 - **Language filtering** — count only the languages you care about.
 - **Health metrics** — comment ratio, complexity per 100 code lines and the
   most complex file.
+- **Baseline snapshots & regression gate** — save a baseline, diff any later
+  tree against it, and fail CI on code/complexity growth or comment-ratio drop.
+- **TokeiMBT/tokei baseline import** — reuse an existing counter's JSON report
+  as the baseline; complexity rules are skipped honestly when absent.
 - **Library + CLI** — a clean public API for embedding, and a full
   command-line tool on top of it.
 
@@ -65,6 +87,15 @@ Options:
       --no-complexity     disable cyclomatic complexity analysis
   -V, --version           print version
   -h, --help              print help
+
+Quality gate (new):
+      --snapshot <FILE>   write a baseline snapshot JSON
+  -b, --baseline <FILE>   compare current scan to FILE (mooncloc or TokeiMBT JSON)
+  -c, --check             with --baseline: fail (exit 1) on a gate violation
+      --max-code-growth <N>           allow at most N new code lines
+      --max-complexity-growth <N>     allow complexity to grow by at most N
+      --min-comment-ratio <PCT>       require comment ratio >= PCT percent
+      --max-file-complexity <N>       fail if any file exceeds complexity N
 ```
 
 ### Examples
@@ -101,6 +132,41 @@ Only count Rust, excluding generated code:
 ```text
 $ moon run cmd/main -- --language Rust --exclude "**/generated" .
 ```
+
+### Quality gate (CI)
+
+Save a baseline of the reviewed state, then gate later changes against it:
+
+```text
+$ moon run cmd/main -- --snapshot baseline.json .
+
+# later, in CI:
+$ moon run cmd/main -- --baseline baseline.json --check \
+    --max-code-growth 50 --max-complexity-growth 10 \
+    --min-comment-ratio 10
+File                Language  Status  Code  Comment  Blank  Cx
+------------------  --------  ------  ----  -------  -----  --
+src/hotspot.mbt     MoonBit   changed   +34       +2     +4  +9
+
+files: +0 added, -0 removed, ~1 changed, 12 unchanged
+totals: code +34, comment +2, blank +4, complexity +9
+quality gate: FAIL (2 violation(s))
+  [max_code_growth] code grew by +34 lines (limit +50)
+  [max_complexity_growth] complexity grew by +9 (limit +10)
+```
+
+The process exits `1` when any rule is violated, `0` otherwise. Use
+`-f json` for a machine-readable verdict (`gate_passed`, `violations`).
+
+To reuse an existing counter instead of mooncloc's own baseline, feed it a
+TokeiMBT / tokei JSON report directly:
+
+```text
+$ moon run cmd/main -- --baseline tokei-report.json --check --max-code-growth 50 .
+```
+
+Complexity-based rules are skipped with a visible note when the baseline
+source does not carry complexity data.
 
 ## Counting rules
 
@@ -139,6 +205,11 @@ Key types: `LanguageDef`, `CountResult`, `FileCount`, `ProjectCount`,
 `CountOptions`, `IgnoreRules`, `ReportFormat`, plus the pure functions
 `count_text`, `count_complexity` and `language_by_extension`.
 
+Quality-gate API: `snapshot_from_counts`, `snapshot_to_json`,
+`snapshot_from_json` (mooncloc and TokeiMBT formats), `diff_snapshots`,
+`GatePolicy` (+ builder methods), `evaluate_gate`, `render_diff_table` and
+`render_diff_json`.
+
 ## Development
 
 ```text
@@ -149,7 +220,8 @@ moon info
 ```
 
 The test suite covers the tokenizer, complexity analyzer, ignore rules,
-report rendering and end-to-end directory scans (40+ tests). The project
+report rendering, the quality-gate module (snapshots, TokeiMBT import, diffs
+and gate policies) and end-to-end directory scans (57 tests). The project
 dogfoods itself: `moon run cmd/main -- .` reports the statistics above.
 
 ### Health metrics

@@ -6,17 +6,36 @@
 
 ---
 
+## 〇、初审未通过后的重新申报要点（2026-11-18 更新）
+
+回信核心意见：统计用途与 TokeiMBT 重合，局部语法/分支词/派生指标/报告格式不构成实质差异；
+要求补充「与现有工具的复用/扩展/差异方案」并以「同一工程的输出对比说明新增用途」。
+
+已完成的工作：
+
+1. **重新定位**：从「又一个 cloc」改为「代码质量回归门禁工具」——统计层是地基，净贡献在其上的时间维度与 CI 决策层。
+2. **新增用途（已实现）**：`--snapshot` 基线快照 → `--baseline ... --check` 逐文件回归对比 → 四条质量门禁策略 + CI 退出码。
+3. **复用方案（已实现）**：`--baseline tokei-report.json` 直接读取 TokeiMBT/tokei JSON 报告为基线，接口级复用，不重复其计数职责；复杂度数据缺失时诚实跳过相应规则。
+4. **对比证据**：`docs/COMPARISON.md` 含同工程 before/after 实测输出与逐条回应。
+5. **提交动作**：
+   - 将本次改动提交并推送到 GitHub（新增 baseline.mbt、baseline_wbtest.mbt、docs/COMPARISON.md，更新申报书/README/CI）；
+   - 在表单「项目申报书」字段粘贴 `docs/PROJECT_PROPOSAL.md` 的新版内容（突出门禁/复用/差异）；
+   - 在「备注」中附加 `docs/COMPARISON.md` 的 GitHub 链接，方便评委直接查看对比证据；
+   - 于 2026-11-30 前重新提交表单等待复审。
+
+---
+
 ## 一、提交前必检（对照章程验收 8 项）
 
 | # | 要求 | 状态 | 说明 |
 |---|---|---|---|
-| 1 | 以 MoonBit 为主要实现语言 | ✅ | 2261 行 MoonBit 代码，14 个文件 |
+| 1 | 以 MoonBit 为主要实现语言 | ✅ | 约 3000 行 MoonBit 代码，9 个模块 + CLI |
 | 2 | GitHub 仓库公开、提交记录清晰 | ✅ | https://github.com/Krinph/mooncloc，19 个语义化提交 |
-| 3 | 源码结构清晰、完成核心功能 | ✅ | 8 个模块 + CLI，功能全部实现 |
-| 4 | README 可复现 | ✅ | 含安装/使用/示例/统计口径，`moon run cmd/main -- .` 可复现 |
+| 3 | 源码结构清晰、完成核心功能 | ✅ | 统计层 + 新增质量门禁层（baseline.mbt），功能全部实现 |
+| 4 | README 可复现 | ✅ | 含安装/使用/示例/统计口径/质量门禁，`moon run cmd/main -- .` 可复现 |
 | 5 | CI 覆盖检查/构建/测试 | ✅ | GitHub Actions 三平台全绿（check --deny-warn / test / fmt / info / dogfood） |
 | 6 | 至少一个可运行示例 | ✅ | `samples/`（MoonBit/Python/Rust）+ README 示例 |
-| 7 | 完整测试覆盖核心路径 | ✅ | 41 个测试全部通过 |
+| 7 | 完整测试覆盖核心路径 | ✅ | 57 个测试全部通过（新增门禁 15 项） |
 | 8 | 发布到 mooncakes.io | ⏳ **验收前完成** | 已登录 mooncakes（Krinph），需创建 API token → `moon login <token>` → `moon publish` |
 
 > 另：参赛者须加入赛事交流群并将群昵改为 GitHub ID（Krinph），否则影响奖金发放。
@@ -37,7 +56,7 @@
 | 10 | 银行卡所属分行 | **由您填写** | 例如：中国银行深圳科创支行 |
 | 11 | 推荐人 | 无推荐人可留空；如有人推荐填其 GitHub ID | 推荐人须已是报名成功选手 |
 | 12 | 《参赛诚信承诺书》 | 阅读后勾选「我已阅读并同意」 | 承诺真实参赛、信息属实 |
-| 13 | 备注 | 建议填写：`项目申报书详见 https://github.com/Krinph/mooncloc/blob/main/docs/PROJECT_PROPOSAL.md` | 可粘贴申报书要点 |
+| 13 | 备注 | 建议填写：项目申报书详见 https://github.com/Krinph/mooncloc/blob/main/docs/PROJECT_PROPOSAL.md ；与 TokeiMBT 的差异及同工程输出对比见 https://github.com/Krinph/mooncloc/blob/main/docs/COMPARISON.md | 强调新增用途与复用方案 |
 | 14 | 渠道 | 按实际情况选 | 填答可参与抽奖 |
 
 ## 三、提交后的流程
