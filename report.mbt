@@ -61,6 +61,22 @@ pub fn most_complex_files(
 }
 
 ///|
+/// All files whose cyclomatic complexity exceeds `limit`, sorted descending.
+/// A file with complexity > `limit` fails the gate.
+pub fn files_over_complexity(
+  counts : Array[FileCount],
+  limit : Int32,
+) -> Array[FileCount] {
+  let over : Array[FileCount] = []
+  for f in counts {
+    if f.complexity > limit {
+      over.push(f)
+    }
+  }
+  sort_files_by_complexity(over)
+}
+
+///|
 fn sort_files_by_complexity(files : Array[FileCount]) -> Array[FileCount] {
   let sorted : Array[FileCount] = []
   for f in files {

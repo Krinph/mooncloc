@@ -2,11 +2,16 @@ import {
   "Krinph/mooncloc",
   "moonbitlang/core/argparse",
   "moonbitlang/core/async",
+  "moonbitlang/core/async/fs",
   "moonbitlang/core/env",
+  "moonbitlang/core/string",
 }
 
 options(
-  "allow-experimental-packages": [ "moonbitlang/core/async" ],
+  "allow-experimental-packages": [
+    "moonbitlang/core/async/fs",
+    "moonbitlang/core/async",
+  ],
 )
 
 pkgtype(kind: "executable")

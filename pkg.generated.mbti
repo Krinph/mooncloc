@@ -8,7 +8,11 @@ pub fn all_languages() -> Array[LanguageDef]
 
 pub fn comment_ratio(Array[FileCount]) -> Double
 
+pub fn comment_ratio_pct(Snapshot) -> Double
+
 pub fn complexity_per_code(Array[FileCount]) -> Double
+
+pub fn complexity_rules_skipped(DiffResult, Snapshot) -> Bool
 
 pub fn count_complexity(String, LanguageDef) -> Int32
 
@@ -17,6 +21,12 @@ pub fn count_file_text(String, LanguageDef, CountOptions) -> FileCount
 pub fn count_text(String, LanguageDef, Bool) -> CountResult
 
 pub let default_excludes : Array[String]
+
+pub fn diff_snapshots(Snapshot, Snapshot) -> DiffResult
+
+pub fn evaluate_gate(GatePolicy, DiffResult, Snapshot) -> Array[GateViolation]
+
+pub fn files_over_complexity(Array[FileCount], Int32) -> Array[FileCount]
 
 pub fn format_by_name(String) -> ReportFormat
 
@@ -28,11 +38,23 @@ pub let max_file_bytes : Int64
 
 pub fn most_complex_files(Array[FileCount], Int32) -> Array[FileCount]
 
+pub fn render_diff_json(DiffResult, Array[GateViolation], Bool) -> String
+
+pub fn render_diff_table(DiffResult) -> String
+
+pub fn render_gate(Array[GateViolation], Bool) -> String
+
 pub fn render_report(Array[FileCount], ReportFormat, Bool) -> String
 
 pub fn report_totals(Array[FileCount]) -> ProjectCount
 
 pub async fn scan_directory(String, CountOptions) -> (Array[FileCount], Array[String])
+
+pub fn snapshot_from_counts(Array[FileCount]) -> Snapshot
+
+pub fn snapshot_from_json(String) -> Snapshot?
+
+pub fn snapshot_to_json(Snapshot) -> String
 
 // Errors
 
@@ -58,6 +80,26 @@ pub struct CountResult {
 }
 pub fn CountResult::default() -> Self
 
+pub struct DiffResult {
+  deltas : Array[FileDelta]
+  added : Int32
+  removed : Int32
+  changed : Int32
+  unchanged : Int32
+  code_delta : Int32
+  comment_delta : Int32
+  blank_delta : Int32
+  complexity_delta : Int32
+  base_code : Int32
+  current_code : Int32
+  base_comment : Int32
+  current_comment : Int32
+  base_complexity : Int32
+  current_complexity : Int32
+  source : String
+  base_source : String
+}
+
 pub struct FileCount {
   path : String
   language : String
@@ -66,6 +108,33 @@ pub struct FileCount {
   code : Int32
   mixed : Int32
   complexity : Int32
+}
+
+pub struct FileDelta {
+  path : String
+  language : String
+  status : String
+  code_delta : Int32
+  comment_delta : Int32
+  blank_delta : Int32
+  complexity_delta : Int32
+}
+
+pub struct GatePolicy {
+  max_code_growth : Int32?
+  max_complexity_growth : Int32?
+  min_comment_ratio : Double?
+  max_file_complexity : Int32?
+}
+pub fn GatePolicy::default() -> Self
+pub fn GatePolicy::with_max_code_growth(Self, Int32) -> Self
+pub fn GatePolicy::with_max_complexity_growth(Self, Int32) -> Self
+pub fn GatePolicy::with_max_file_complexity(Self, Int32) -> Self
+pub fn GatePolicy::with_min_comment_ratio(Self, Double) -> Self
+
+pub struct GateViolation {
+  rule : String
+  detail : String
 }
 
 pub struct IgnoreRules {
@@ -110,6 +179,20 @@ pub enum ReportFormat {
   Json
   Csv
   Markdown
+}
+
+pub struct Snapshot {
+  source : String
+  files : Array[SnapshotFile]
+}
+
+pub struct SnapshotFile {
+  path : String
+  language : String
+  code : Int32
+  comment : Int32
+  blank : Int32
+  complexity : Int32
 }
 
 // Type aliases
